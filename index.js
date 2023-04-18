@@ -26,17 +26,23 @@ async function run() {
 
         const perfumeCollection = client.db('perfumeInventory').collection('perfumes');
 
+        app.get('/perfumes', async (req, res) => {
+            const query = {};
+            const cursor = perfumeCollection.find(query);
+            const perfumes = await cursor.toArray();
+            res.send(perfumes);
+        });
+
         //post an item
         app.post('/add/item', async (req, res) => {
             const item = req.body;
-            console.log(item);
 
             const result = await perfumeCollection.insertOne(item);
             res.send(result);
         });
 
 
-        
+
     } finally {
         // await client.close();
     }
