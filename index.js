@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 const app = express();
@@ -26,6 +26,7 @@ async function run() {
 
         const perfumeCollection = client.db('perfumeInventory').collection('perfumes');
 
+        //get all the perfumes
         app.get('/perfumes', async (req, res) => {
             const query = {};
             const cursor = perfumeCollection.find(query);
@@ -38,6 +39,14 @@ async function run() {
             const item = req.body;
 
             const result = await perfumeCollection.insertOne(item);
+            res.send(result);
+        });
+
+        app.delete('/perfume/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const query = { _id: ObjectId(id) };
+            const result = await perfumeCollection.deleteOne(query);
             res.send(result);
         });
 
